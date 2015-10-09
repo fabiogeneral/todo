@@ -58,14 +58,7 @@
 		23DA6FDF1BC80819000E0A8F /* To-do */ = {
 			isa = PBXGroup;
 			children = (
-				23DA6FE31BC8081A000E0A8F /* AppDelegate.h */,
-				23DA6FE41BC8081A000E0A8F /* AppDelegate.m */,
-				23DA6FE61BC8081A000E0A8F /* ViewController.h */,
-				23DA6FE71BC8081A000E0A8F /* ViewController.m */,
-				23DA6FE91BC8081A000E0A8F /* Main.storyboard */,
-				23DA6FEC1BC8081A000E0A8F /* Assets.xcassets */,
-				23DA6FEE1BC8081A000E0A8F /* LaunchScreen.storyboard */,
-				23DA6FF11BC8081A000E0A8F /* Info.plist */,
+				23DA6FF71BC8134A000E0A8F /* GUI */,
 				23DA6FE01BC8081A000E0A8F /* Supporting Files */,
 			);
 			path = "To-do";
@@ -77,6 +70,21 @@
 				23DA6FE11BC8081A000E0A8F /* main.m */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		23DA6FF71BC8134A000E0A8F /* GUI */ = {
+			isa = PBXGroup;
+			children = (
+				23DA6FE31BC8081A000E0A8F /* AppDelegate.h */,
+				23DA6FE41BC8081A000E0A8F /* AppDelegate.m */,
+				23DA6FE61BC8081A000E0A8F /* ViewController.h */,
+				23DA6FE71BC8081A000E0A8F /* ViewController.m */,
+				23DA6FE91BC8081A000E0A8F /* Main.storyboard */,
+				23DA6FEC1BC8081A000E0A8F /* Assets.xcassets */,
+				23DA6FEE1BC8081A000E0A8F /* LaunchScreen.storyboard */,
+				23DA6FF11BC8081A000E0A8F /* Info.plist */,
+			);
+			name = GUI;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
