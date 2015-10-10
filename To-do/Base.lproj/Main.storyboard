@@ -7,7 +7,7 @@
         <!--To-do list-->
         <scene sceneID="J9x-s7-Z2c">
             <objects>
-                <tableViewController id="T9s-Q9-DgO" sceneMemberID="viewController">
+                <tableViewController title="To-do list" id="T9s-Q9-DgO" customClass="ViewController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="OVh-YC-bii">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

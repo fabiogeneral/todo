@@ -8,8 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ViewController : UIViewController
+@interface ViewController : UITableViewController
 
+// instance variables
+@property (nonatomic) NSMutableArray *todos;
+@property (nonatomic) UIBarButtonItem *addButton;
+
+// methods
+- (void)insertNewTodo:(id)sender;
 
 @end
 
