@@ -11,11 +11,15 @@
 @interface ViewController : UITableViewController
 
 // instance variables
-@property (nonatomic) NSMutableArray *todos;
 @property (nonatomic) UIBarButtonItem *addButton;
+@property (nonatomic) UIBarButtonItem *doneButton;
+@property (nonatomic) NSMutableArray *todos;
+@property (nonatomic) NSMutableArray *createTodo;
+
 
 // methods
 - (void)insertNewTodo:(id)sender;
+- (BOOL)finishedTodo:(UITextField *)textField;
 
 @end
 

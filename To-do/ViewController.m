@@ -17,9 +17,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    // declaring add button
+    // Declaring add button
+    // it needs to be instantiated after all stop
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewTodo:)];
     self.navigationItem.rightBarButtonItem = addButton;
+    // Edit Button
+    self.navigationItem.leftBarButtonItem = self.editButtonItem;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -30,6 +33,7 @@
 #pragma mark - Add to-dos
 
 //@synthesize someObject = _someObject; // to provide setter AND getter
+//or @synthesize someObject;
 
 /* to accessor method for a property - “lazy accessor” GETTER [https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ProgrammingWithObjectiveC/EncapsulatingData/EncapsulatingData.html]
  
@@ -46,13 +50,13 @@
  }
  }*/
 
-@synthesize todos = _todos;
+@synthesize todos;
 
-// inserting New To-do
+// Inserting New To-do
 - (void)insertNewTodo:(id)sender {
-    if (!_todos) _todos = [[NSMutableArray alloc] init];
-    NSString *myTodo = @"A to-do just ready";
-    [_todos insertObject:myTodo atIndex:0];
+    if (!todos) todos = [[NSMutableArray alloc] init];
+    NSMutableString *createTodo = [[NSMutableString alloc] initWithString:@"write your to-do"];
+    [todos insertObject:createTodo atIndex:0];
     
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
     [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -72,10 +76,38 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
-    
-    NSDate *todo = self.todos[indexPath.row];
-    cell.textLabel.text = [todo description];
+    // Changing to text field
+    if ([indexPath row] == 0) {
+        UITextField *useTextField = [[UITextField alloc] initWithFrame:CGRectMake(15, 8, cell.contentView.bounds.size.width - 60, 30)];
+        // Passing to insert new to-do
+        NSString *todo = self.todos[indexPath.row];
+        useTextField.placeholder = [todo description];
+        [cell.contentView addSubview:useTextField];
+        // Setting Return Key Button
+        useTextField.returnKeyType = UIReturnKeyDone;
+        
+        // Inserting Done Button
+        UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(finishedTodo:)];
+        self.navigationItem.rightBarButtonItem = doneButton;
+    }
     return cell;
+}
+
+- (BOOL)finishedTodo:(UITextField *)textField {
+    [self.view endEditing:YES];
+    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewTodo:)];
+    self.navigationItem.rightBarButtonItem = addButton;
+    return YES;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    if (cell.accessoryType == UITableViewCellAccessoryNone) {
+        cell.accessoryType = UITableViewCellAccessoryCheckmark;
+    } else {
+        cell.accessoryType = UITableViewCellAccessoryNone;
+    }
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
