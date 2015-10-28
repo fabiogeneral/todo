@@ -52,16 +52,6 @@
 
 @synthesize todos;
 
-// Inserting New To-do
-- (void)insertNewTodo:(id)sender {
-    if (!todos) todos = [[NSMutableArray alloc] init];
-    NSMutableString *createTodo = [[NSMutableString alloc] initWithString:@"write your to-do"];
-    [todos insertObject:createTodo atIndex:0];
-    
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-    [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-}
-
 #pragma mark - Table View
 
 // Copied from Master-detail application
@@ -82,17 +72,30 @@
         // Passing to insert new to-do
         NSString *todo = self.todos[indexPath.row];
         useTextField.placeholder = [todo description];
+        useTextField.backgroundColor = [UIColor whiteColor]; // trick to hide reusablecell deleted
         [cell.contentView addSubview:useTextField];
-        // Setting Return Key Button
-        useTextField.returnKeyType = UIReturnKeyDone;
-        
         // Inserting Done Button
         UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(finishedTodo:)];
         self.navigationItem.rightBarButtonItem = doneButton;
+        // Setting Return Key Button
+        useTextField.returnKeyType = UIReturnKeyDone;
+        [useTextField addTarget:self action:@selector(insertNewTodo:) forControlEvents:UIControlEventEditingDidEndOnExit];
     }
+    [tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
     return cell;
 }
 
+// Inserting New To-do
+- (void)insertNewTodo:(id)sender {
+    if (!todos) todos = [[NSMutableArray alloc] init];
+    NSMutableString *createTodo = [[NSMutableString alloc] initWithString:@"write your to-do"];
+    [todos insertObject:createTodo atIndex:0];
+    
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+    [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+}
+
+// Finishing New To-do
 - (BOOL)finishedTodo:(UITextField *)textField {
     [self.view endEditing:YES];
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewTodo:)];

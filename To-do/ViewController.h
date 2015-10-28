@@ -15,7 +15,7 @@
 @property (nonatomic) UIBarButtonItem *doneButton;
 @property (nonatomic) NSMutableArray *todos;
 @property (nonatomic) NSMutableArray *createTodo;
-
+@property (nonatomic) UITextField *fieldTodo;
 
 // methods
 - (void)insertNewTodo:(id)sender;
