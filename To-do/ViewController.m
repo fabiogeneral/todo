@@ -17,6 +17,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+    
+    self.todos = @[@{@"name" : @"write your to-do", @"category" : @"Home"}, @{@"name" : @"write your to-do", @"category" : @"Work"}].mutableCopy;
+    self.categories = @[@"Home", @"Work", @"Completed"];
+
     // Declaring add button
     // it needs to be instantiated after all stop
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewTodo:)];
@@ -54,44 +58,65 @@
 
 #pragma mark - Table View
 
+// Helper methods
+- (NSArray *)todosInCategory:(NSString *)targetCategory {
+    NSPredicate *matchingPredicate = [NSPredicate predicateWithFormat:@"category == %@", targetCategory];
+    NSArray *categoryTodos = [todos filteredArrayUsingPredicate:matchingPredicate];
+    
+    return categoryTodos;
+}
+
+- (NSInteger)numberOfTodosInCategory:(NSString *)targetCategory {
+    return [self todosInCategory:targetCategory].count;
+}
+
+- (NSDictionary *)todosAtIndexPath:(NSIndexPath *)indexPath {
+    NSString *category = self.categories[indexPath.section];
+    NSArray *categoryTodos = [self todosInCategory:category];
+    NSDictionary *todo = categoryTodos[indexPath.row];
+    
+    return todo;
+}
+
 // Copied from Master-detail application
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+    return self.categories.count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.todos.count;
+    return [self numberOfTodosInCategory:self.categories[section]];
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    return self.categories[section];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
     // Changing to text field
-    if ([indexPath row] == 0) {
+    if ([indexPath row] >= 0) {
         UITextField *useTextField = [[UITextField alloc] initWithFrame:CGRectMake(15, 8, cell.contentView.bounds.size.width - 60, 30)];
         // Passing to insert new to-do
-        NSString *todo = self.todos[indexPath.row];
-        useTextField.placeholder = [todo description];
+        NSDictionary *todo = self.todos[indexPath.row];
+        useTextField.placeholder = todo[@"name"];
         useTextField.backgroundColor = [UIColor whiteColor]; // trick to hide reusablecell deleted
         [cell.contentView addSubview:useTextField];
-        // Inserting Done Button
-        UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(finishedTodo:)];
-        self.navigationItem.rightBarButtonItem = doneButton;
         // Setting Return Key Button
         useTextField.returnKeyType = UIReturnKeyDone;
         [useTextField addTarget:self action:@selector(insertNewTodo:) forControlEvents:UIControlEventEditingDidEndOnExit];
     }
-    [tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
     return cell;
 }
 
 // Inserting New To-do
 - (void)insertNewTodo:(id)sender {
     if (!todos) todos = [[NSMutableArray alloc] init];
-    NSMutableString *createTodo = [[NSMutableString alloc] initWithString:@"write your to-do"];
-    [todos insertObject:createTodo atIndex:0];
+    NSDictionary *createTodo = @{@"name" : @"write your to-do", @"category" : @"Home"};
+    [todos addObject:createTodo];
     
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+    NSInteger numHomeTodos = [self numberOfTodosInCategory:@"Home"];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:numHomeTodos - 1 inSection:0];
     [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
@@ -103,6 +128,7 @@
     return YES;
 }
 
+// Editing To-do
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     if (cell.accessoryType == UITableViewCellAccessoryNone) {
@@ -110,6 +136,7 @@
     } else {
         cell.accessoryType = UITableViewCellAccessoryNone;
     }
+    
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
@@ -120,6 +147,10 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
+        // fix checkmark new-todo
+        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+        cell.accessoryType = UITableViewCellAccessoryNone;
+        
         [self.todos removeObjectAtIndex:indexPath.row];
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
     } else if (editingStyle == UITableViewCellEditingStyleInsert) {
