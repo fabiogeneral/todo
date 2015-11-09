@@ -133,6 +133,14 @@
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     if (cell.accessoryType == UITableViewCellAccessoryNone) {
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
+        // Moving to completed section
+        [self.todos removeObjectAtIndex:indexPath.row];
+        [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        NSDictionary *addObject = @{@"name" : @"teste", @"category" : @"Completed"};
+        [self.todos addObject:addObject];
+        NSInteger numCompletedTodos = [self numberOfTodosInCategory:@"Completed"];
+        NSIndexPath *toIndexPath = [NSIndexPath indexPathForRow:numCompletedTodos - 1 inSection:2];
+        [self.tableView insertRowsAtIndexPaths:@[toIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
     } else {
         cell.accessoryType = UITableViewCellAccessoryNone;
     }
